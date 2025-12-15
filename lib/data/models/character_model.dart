@@ -37,6 +37,10 @@ class CharacterModel {
       occupation = gender == 'Female' ? 'Jubilada' : 'Jubilado';
     }
 
+    if (occupation.toLowerCase() == 'housewife') {
+      occupation = 'Ama de casa';
+    }
+
     return CharacterModel(
       id: json['id'] as int? ?? 0,
       name: json['name'] as String? ?? 'Desconocido',

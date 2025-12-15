@@ -14,11 +14,38 @@ class HomeLoading extends HomeState {}
 
 class HomeLoaded extends HomeState {
   final List<CharacterModel> characters;
+  final bool hasReachedMax;
+  final int currentPage;
+  final bool isLoadingMore;
 
-  const HomeLoaded(this.characters);
+  const HomeLoaded({
+    required this.characters,
+    this.hasReachedMax = false,
+    this.currentPage = 1,
+    this.isLoadingMore = false,
+  });
+
+  HomeLoaded copyWith({
+    List<CharacterModel>? characters,
+    bool? hasReachedMax,
+    int? currentPage,
+    bool? isLoadingMore,
+  }) {
+    return HomeLoaded(
+      characters: characters ?? this.characters,
+      hasReachedMax: hasReachedMax ?? this.hasReachedMax,
+      currentPage: currentPage ?? this.currentPage,
+      isLoadingMore: isLoadingMore ?? this.isLoadingMore,
+    );
+  }
 
   @override
-  List<Object> get props => [characters];
+  List<Object> get props => [
+    characters,
+    hasReachedMax,
+    currentPage,
+    isLoadingMore,
+  ];
 }
 
 class HomeError extends HomeState {
