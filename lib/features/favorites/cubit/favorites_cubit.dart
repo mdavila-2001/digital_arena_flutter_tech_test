@@ -29,8 +29,8 @@ class FavoritesCubit extends Cubit<FavoritesState> {
       );
 
       await _localStorageService.saveCharacter(newFavorite);
-      
-      loadFavorites(); 
+
+      loadFavorites();
     } catch (e) {
       emit(FavoritesError("No se pudo guardar: $e"));
     }
@@ -42,6 +42,15 @@ class FavoritesCubit extends Cubit<FavoritesState> {
       loadFavorites();
     } catch (e) {
       emit(FavoritesError("Error al eliminar"));
+    }
+  }
+
+  Future<void> updateFavorite(int apiId, String newCustomName) async {
+    try {
+      await _localStorageService.updateCustomName(apiId, newCustomName);
+      loadFavorites();
+    } catch (e) {
+      emit(FavoritesError("Error al actualizar: $e"));
     }
   }
 }

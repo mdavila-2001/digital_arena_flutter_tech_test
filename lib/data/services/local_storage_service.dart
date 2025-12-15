@@ -13,7 +13,7 @@ class LocalStorageService {
 
   Future<void> saveCharacter(LocalCharacter character) async {
     final box = await _getBox();
-    await box.put(character.apiId, character); 
+    await box.put(character.apiId, character);
   }
 
   Future<List<LocalCharacter>> getFavorites() async {
@@ -24,5 +24,29 @@ class LocalStorageService {
   Future<void> deleteCharacter(int apiId) async {
     final box = await _getBox();
     await box.delete(apiId);
+  }
+
+  Future<bool> isFavorite(int apiId) async {
+    final box = await _getBox();
+    return box.containsKey(apiId);
+  }
+
+  Future<Set<int>> getFavoriteIds() async {
+    final box = await _getBox();
+    return box.keys.cast<int>().toSet();
+  }
+
+  Future<void> updateCustomName(int apiId, String newCustomName) async {
+    final box = await _getBox();
+    final existing = box.get(apiId);
+    if (existing != null) {
+      final updated = LocalCharacter(
+        apiId: existing.apiId,
+        originalName: existing.originalName,
+        customName: newCustomName,
+        image: existing.image,
+      );
+      await box.put(apiId, updated);
+    }
   }
 }

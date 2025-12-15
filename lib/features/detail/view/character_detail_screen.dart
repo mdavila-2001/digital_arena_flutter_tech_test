@@ -52,25 +52,35 @@ class CharacterDetailView extends StatelessWidget {
                   child: Text(
                     char.name,
                     style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                          fontWeight: FontWeight.bold,
-                        ),
+                      fontWeight: FontWeight.bold,
+                    ),
                     textAlign: TextAlign.center,
                   ),
                 ),
                 const SizedBox(height: 10),
-                
+
                 Wrap(
                   spacing: 8,
                   alignment: WrapAlignment.center,
                   children: [
-                    _InfoChip(label: "${char.age} años", icon: Icons.cake),
-                    _InfoChip(label: char.status, icon: Icons.health_and_safety),
+                    if (char.age > 0)
+                      _InfoChip(
+                        label: "${char.age} año${char.age == 1 ? '' : 's'}",
+                        icon: Icons.cake,
+                      ),
+                    _InfoChip(
+                      label: char.status,
+                      icon: Icons.health_and_safety,
+                    ),
                     _InfoChip(label: char.occupation, icon: Icons.work),
                   ],
                 ),
                 const Divider(height: 30),
 
-                Text("Biografía", style: Theme.of(context).textTheme.titleLarge),
+                Text(
+                  "Biografía",
+                  style: Theme.of(context).textTheme.titleLarge,
+                ),
                 const SizedBox(height: 8),
                 Text(
                   char.description,
@@ -79,27 +89,34 @@ class CharacterDetailView extends StatelessWidget {
                 const SizedBox(height: 20),
 
                 if (char.phrases.isNotEmpty) ...[
-                  Text("Frases Célebres", style: Theme.of(context).textTheme.titleLarge),
+                  Text(
+                    "Frases Célebres",
+                    style: Theme.of(context).textTheme.titleLarge,
+                  ),
                   const SizedBox(height: 8),
-                  ...char.phrases.map((phrase) => Card(
-                        margin: const EdgeInsets.only(bottom: 8),
-                        child: Padding(
-                          padding: const EdgeInsets.all(12.0),
-                          child: Row(
-                            children: [
-                              const Icon(Icons.format_quote, color: Colors.grey),
-                              const SizedBox(width: 10),
-                              Expanded(
-                                child: Text(
-                                  phrase,
-                                  style: const TextStyle(fontStyle: FontStyle.italic),
+                  ...char.phrases.map(
+                    (phrase) => Card(
+                      margin: const EdgeInsets.only(bottom: 8),
+                      child: Padding(
+                        padding: const EdgeInsets.all(12.0),
+                        child: Row(
+                          children: [
+                            const Icon(Icons.format_quote, color: Colors.grey),
+                            const SizedBox(width: 10),
+                            Expanded(
+                              child: Text(
+                                phrase,
+                                style: const TextStyle(
+                                  fontStyle: FontStyle.italic,
                                 ),
                               ),
-                            ],
-                          ),
+                            ),
+                          ],
                         ),
-                      )),
-                ]
+                      ),
+                    ),
+                  ),
+                ],
               ],
             ),
           );
@@ -119,9 +136,6 @@ class _InfoChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Chip(
-      avatar: Icon(icon, size: 16),
-      label: Text(label),
-    );
+    return Chip(avatar: Icon(icon, size: 16), label: Text(label));
   }
 }

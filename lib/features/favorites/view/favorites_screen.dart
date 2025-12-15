@@ -14,13 +14,11 @@ class FavoritesScreen extends StatelessWidget {
       create: (context) => sl<FavoritesCubit>()..loadFavorites(),
       child: Scaffold(
         appBar: AppBar(
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back),
+            onPressed: () => context.go('/api-list'),
+          ),
           title: const Text("Mis Favoritos"),
-          actions: [
-            IconButton(
-              icon: const Icon(Icons.home),
-              onPressed: () => context.go('/api-list'),
-            ),
-          ],
         ),
         body: BlocBuilder<FavoritesCubit, FavoritesState>(
           builder: (context, state) {
@@ -32,13 +30,17 @@ class FavoritesScreen extends StatelessWidget {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      const Icon(Icons.favorite_border, size: 60, color: Colors.grey),
+                      const Icon(
+                        Icons.favorite_border,
+                        size: 60,
+                        color: Colors.grey,
+                      ),
                       const SizedBox(height: 10),
                       const Text("No tienes favoritos aún"),
                       TextButton(
                         onPressed: () => context.go('/api-list'),
                         child: const Text("Ir a agregar uno"),
-                      )
+                      ),
                     ],
                   ),
                 );
@@ -60,28 +62,78 @@ class FavoritesScreen extends StatelessWidget {
                       onPressed: () {
                         showDialog(
                           context: context,
-                          builder: (ctx) => AlertDialog(
-                            title: const Text("¿Eliminar?"),
-                            content: const Text("Se borrará de tu lista local."),
-                            actions: [
-                              TextButton(
-                                onPressed: () => Navigator.pop(ctx),
-                                child: const Text("Cancelar"),
+                          builder:
+                              (ctx) => AlertDialog(
+                                title: const Text("¿Eliminar?"),
+                                content: const Text(
+                                  "Se borrará de tu lista local.",
+                                ),
+                                actions: [
+                                  TextButton(
+                                    onPressed: () => Navigator.pop(ctx),
+                                    child: const Text("Cancelar"),
+                                  ),
+                                  TextButton(
+                                    onPressed: () {
+                                      Navigator.pop(ctx);
+                                      context
+                                          .read<FavoritesCubit>()
+                                          .deleteFavorite(fav.apiId);
+                                    },
+                                    child: const Text(
+                                      "Eliminar",
+                                      style: TextStyle(color: Colors.red),
+                                    ),
+                                  ),
+                                ],
                               ),
-                              TextButton(
-                                onPressed: () {
-                                  Navigator.pop(ctx);
-                                  context.read<FavoritesCubit>().deleteFavorite(fav.apiId);
-                                },
-                                child: const Text("Eliminar", style: TextStyle(color: Colors.red)),
-                              ),
-                            ],
-                          ),
                         );
                       },
                     ),
                     onTap: () {
-                      // Aquí iríamos al detalle (/prefs/:id)
+                      final nameController = TextEditingController(
+                        text: fav.customName,
+                      );
+                      showDialog(
+                        context: context,
+                        builder:
+                            (ctx) => AlertDialog(
+                              title: const Text("Editar Apodo"),
+                              content: TextField(
+                                controller: nameController,
+                                decoration: const InputDecoration(
+                                  labelText: "Nombre personalizado",
+                                  border: OutlineInputBorder(),
+                                ),
+                                autofocus: true,
+                              ),
+                              actions: [
+                                TextButton(
+                                  onPressed: () => Navigator.pop(ctx),
+                                  child: const Text("Cancelar"),
+                                ),
+                                FilledButton(
+                                  onPressed: () {
+                                    final newName = nameController.text.trim();
+                                    if (newName.isNotEmpty) {
+                                      Navigator.pop(ctx);
+                                      context
+                                          .read<FavoritesCubit>()
+                                          .updateFavorite(fav.apiId, newName);
+                                      ScaffoldMessenger.of(
+                                        context,
+                                      ).showSnackBar(
+                                        const SnackBar(
+                                          content: Text("¡Actualizado!"),
+                                        ),
+                                      );
+                                    }
+                                  },
+                                  child: const Text("Guardar"),
+                                ),
+                              ],
+                            ),
+                      );
                     },
                   );
                 },

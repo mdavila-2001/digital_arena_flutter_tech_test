@@ -2,7 +2,9 @@ import 'package:digital_arena_flutter_tech_test/features/favorites/view/add_favo
 import 'package:digital_arena_flutter_tech_test/features/home/view/home_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import 'data/models/character_model.dart';
+import 'data/models/local_character.dart';
 import 'features/detail/view/character_detail_screen.dart';
 import 'features/favorites/view/favorites_screen.dart';
 import 'injection_container.dart' as di;
@@ -12,13 +14,15 @@ class FavoriteDetailScreen extends StatelessWidget {
   const FavoriteDetailScreen({super.key, required this.id});
   @override
   Widget build(BuildContext context) => Scaffold(
-        appBar: AppBar(title: Text("Detalle ID: $id")),
-        body: const Center(child: Text("Datos del personaje guardado")),
-      );
+    appBar: AppBar(title: Text("Detalle ID: $id")),
+    body: const Center(child: Text("Datos del personaje guardado")),
+  );
 }
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await Hive.initFlutter();
+  Hive.registerAdapter(LocalCharacterAdapter());
   await di.init();
   runApp(const MyApp());
 }
@@ -37,7 +41,7 @@ final _router = GoRouter(
       builder: (context, state) => const FavoritesScreen(),
       routes: [
         GoRoute(
-          path: 'new', 
+          path: 'new',
           name: 'add_favorite',
           builder: (context, state) {
             final char = state.extra as CharacterModel?;
@@ -45,7 +49,7 @@ final _router = GoRouter(
           },
         ),
         GoRoute(
-          path: ':id', 
+          path: ':id',
           name: 'favorite_detail',
           builder: (context, state) {
             final id = state.pathParameters['id']!;

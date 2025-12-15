@@ -17,25 +17,45 @@ class HomeLoaded extends HomeState {
   final bool hasReachedMax;
   final int currentPage;
   final bool isLoadingMore;
+  final Set<int> favoriteIds;
+  final String searchQuery;
 
   const HomeLoaded({
     required this.characters,
     this.hasReachedMax = false,
     this.currentPage = 1,
     this.isLoadingMore = false,
+    this.favoriteIds = const {},
+    this.searchQuery = '',
   });
+
+  List<CharacterModel> get filteredCharacters {
+    if (searchQuery.isEmpty) return characters;
+    final query = searchQuery.toLowerCase();
+    return characters
+        .where(
+          (c) =>
+              c.name.toLowerCase().contains(query) ||
+              c.occupation.toLowerCase().contains(query),
+        )
+        .toList();
+  }
 
   HomeLoaded copyWith({
     List<CharacterModel>? characters,
     bool? hasReachedMax,
     int? currentPage,
     bool? isLoadingMore,
+    Set<int>? favoriteIds,
+    String? searchQuery,
   }) {
     return HomeLoaded(
       characters: characters ?? this.characters,
       hasReachedMax: hasReachedMax ?? this.hasReachedMax,
       currentPage: currentPage ?? this.currentPage,
       isLoadingMore: isLoadingMore ?? this.isLoadingMore,
+      favoriteIds: favoriteIds ?? this.favoriteIds,
+      searchQuery: searchQuery ?? this.searchQuery,
     );
   }
 
@@ -45,6 +65,8 @@ class HomeLoaded extends HomeState {
     hasReachedMax,
     currentPage,
     isLoadingMore,
+    favoriteIds,
+    searchQuery,
   ];
 }
 

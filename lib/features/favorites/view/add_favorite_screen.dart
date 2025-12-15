@@ -47,7 +47,7 @@ class _AddFavoriteScreenState extends State<AddFavoriteScreen> {
         body: BlocConsumer<FavoritesCubit, FavoritesState>(
           listener: (context, state) {
             if (state is FavoritesLoaded) {
-              context.go('/prefs'); 
+              context.go('/api-list');
               ScaffoldMessenger.of(context).showSnackBar(
                 const SnackBar(content: Text("¡Guardado con éxito!")),
               );
@@ -68,7 +68,10 @@ class _AddFavoriteScreenState extends State<AddFavoriteScreen> {
                       ),
                     ),
                     const SizedBox(height: 10),
-                    Text(char.name, style: Theme.of(context).textTheme.titleLarge),
+                    Text(
+                      char.name,
+                      style: Theme.of(context).textTheme.titleLarge,
+                    ),
                     const SizedBox(height: 30),
                     TextFormField(
                       controller: _nameController,
@@ -101,16 +104,16 @@ class _AddFavoriteScreenState extends State<AddFavoriteScreen> {
                             onPressed: () {
                               if (_formKey.currentState!.validate()) {
                                 context.read<FavoritesCubit>().addFavorite(
-                                      char,
-                                      _nameController.text,
-                                    );
+                                  char,
+                                  _nameController.text,
+                                );
                               }
                             },
                             child: const Text("Guardar"),
                           ),
                         ),
                       ],
-                    )
+                    ),
                   ],
                 ),
               ),
